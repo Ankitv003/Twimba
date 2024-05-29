@@ -1,98 +1,95 @@
-import { tweetsData } from './data.js'
-import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
+import { tweetsData } from "./data.js";
+import { v4 as uuidv4 } from "https://jspm.dev/uuid";
 
-document.addEventListener('click', function(e){
-    if(e.target.dataset.like){
-       handleLikeClick(e.target.dataset.like) 
-    }
-    else if(e.target.dataset.retweet){
-        handleRetweetClick(e.target.dataset.retweet)
-    }
-    else if(e.target.dataset.reply){
-        handleReplyClick(e.target.dataset.reply)
-    }
-    else if(e.target.id === 'tweet-btn'){
-        handleTweetBtnClick()
-    }
-})
- 
-function handleLikeClick(tweetId){ 
-    const targetTweetObj = tweetsData.filter(function(tweet){
-        return tweet.uuid === tweetId
-    })[0]
+document.addEventListener("click", function (e) {
+  if (e.target.dataset.like) {
+    handleLikeClick(e.target.dataset.like);
+  } else if (e.target.dataset.retweet) {
+    handleRetweetClick(e.target.dataset.retweet);
+  } else if (e.target.dataset.reply) {
+    handleReplyClick(e.target.dataset.reply);
+  } else if (e.target.id === "tweet-btn") {
+    handleTweetBtnClick();
+  } else if (e.target.id === "delete-btn") {
+    handleDeleteTweet();
+  }
+});
 
-    if (targetTweetObj.isLiked){
-        targetTweetObj.likes--
-    }
-    else{
-        targetTweetObj.likes++ 
-    }
-    targetTweetObj.isLiked = !targetTweetObj.isLiked
-    render()
+function handleDeleteTweet() {
+  const tweetId = tweetsData.forEach((tweet) => {
+    return tweet.uuid;
+  });
+  console.log(tweetId);
+  // const tweet = tweetsData.find((tweet) => tweet.id === tweetId);
+  // const index = tweetsData.indexOf(tweet);
+  // tweetsData.splice(index, 1);
 }
 
-function handleRetweetClick(tweetId){
-    const targetTweetObj = tweetsData.filter(function(tweet){
-        return tweet.uuid === tweetId
-    })[0]
-    
-    if(targetTweetObj.isRetweeted){
-        targetTweetObj.retweets--
-    }
-    else{
-        targetTweetObj.retweets++
-    }
-    targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
-    render() 
+function handleLikeClick(tweetId) {
+  const targetTweetObj = tweetsData.filter(function (tweet) {
+    return tweet.uuid === tweetId;
+  })[0];
+
+  if (targetTweetObj.isLiked) {
+    targetTweetObj.likes--;
+  } else {
+    targetTweetObj.likes++;
+  }
+  targetTweetObj.isLiked = !targetTweetObj.isLiked;
+  render();
 }
 
-function handleReplyClick(replyId){
-    document.getElementById(`replies-${replyId}`).classList.toggle('hidden')
+function handleRetweetClick(tweetId) {
+  const targetTweetObj = tweetsData.filter(function (tweet) {
+    return tweet.uuid === tweetId;
+  })[0];
+
+  if (targetTweetObj.isRetweeted) {
+    targetTweetObj.retweets--;
+  } else {
+    targetTweetObj.retweets++;
+  }
+  targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted;
+  render();
 }
 
-function handleTweetBtnClick(){
-    const tweetInput = document.getElementById('tweet-input')
-
-    if(tweetInput.value){
-        tweetsData.unshift({
-            handle: `@Scrimba`,
-            profilePic: `images/scrimbalogo.png`,
-            likes: 0,
-            retweets: 0,
-            tweetText: tweetInput.value,
-            replies: [],
-            isLiked: false,
-            isRetweeted: false,
-            uuid: uuidv4()
-        })
-    render()
-    tweetInput.value = ''
-    }
-
+function handleReplyClick(replyId) {
+  document.getElementById(`replies-${replyId}`).classList.toggle("hidden");
 }
 
-function getFeedHtml(){
-    let feedHtml = ``
-    
-    tweetsData.forEach(function(tweet){
-        
-        let likeIconClass = ''
-        
-        if (tweet.isLiked){
-            likeIconClass = 'liked'
-        }
-        
-        let retweetIconClass = ''
-        
-        if (tweet.isRetweeted){
-            retweetIconClass = 'retweeted'
-        }
-        
-        let repliesHtml = ''
-        
-        if(tweet.replies.length > 0){
-            tweet.replies.forEach(function(reply){
-                repliesHtml+=`
+function handleTweetBtnClick() {
+  const tweetInput = document.getElementById("tweet-input");
+
+  if (tweetInput.value) {
+    tweetsData.unshift({
+      handle: `@Scrimba`,
+      profilePic: `images/scrimbalogo.png`,
+      likes: 0,
+      retweets: 0,
+      tweetText: tweetInput.value,
+      replies: [],
+      isLiked: false,
+      isRetweeted: false,
+      uuid: uuidv4(),
+    });
+    render();
+    tweetInput.value = "";
+  }
+}
+
+function getFeedHtml() {
+  let feedHtml = ``;
+
+  tweetsData.forEach(function (tweet) {
+    let likeIconClass = tweet.isLiked ? "liked" : "";
+
+    let retweetIconClass = tweet.isRetweeted ? "retweeted" : "";
+
+    let repliesHtml = "";
+
+    if (tweet.replies.length > 0) {
+      tweet.replies.forEach(function (reply) {
+        repliesHtml += `
 <div class="tweet-reply">
     <div class="tweet-inner">
         <img src="${reply.profilePic}" class="profile-pic">
@@ -102,17 +99,19 @@ function getFeedHtml(){
             </div>
         </div>
 </div>
-`
-            })
-        }
-        
-          
-        feedHtml += `
+`;
+      });
+    }
+
+    feedHtml += `
 <div class="tweet">
     <div class="tweet-inner">
         <img src="${tweet.profilePic}" class="profile-pic">
         <div>
+          <div class="handle-div">
             <p class="handle">${tweet.handle}</p>
+          <i id="delete-btn" class="fa-solid fa-trash "></i>
+          </div>
             <p class="tweet-text">${tweet.tweetText}</p>
             <div class="tweet-details">
                 <span class="tweet-detail">
@@ -140,14 +139,13 @@ function getFeedHtml(){
         ${repliesHtml}
     </div>   
 </div>
-`
-   })
-   return feedHtml 
+`;
+  });
+  return feedHtml;
 }
 
-function render(){
-    document.getElementById('feed').innerHTML = getFeedHtml()
+function render() {
+  document.getElementById("feed").innerHTML = getFeedHtml();
 }
 
-render()
-
+render();
