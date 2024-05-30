@@ -11,18 +11,15 @@ document.addEventListener("click", function (e) {
   } else if (e.target.id === "tweet-btn") {
     handleTweetBtnClick();
   } else if (e.target.id === "delete-btn") {
-    handleDeleteTweet();
+    handleDeleteTweet(e.target.dataset.delete);
   }
 });
 
-function handleDeleteTweet() {
-  const tweetId = tweetsData.forEach((tweet) => {
-    return tweet.uuid;
-  });
-  console.log(tweetId);
-  // const tweet = tweetsData.find((tweet) => tweet.id === tweetId);
-  // const index = tweetsData.indexOf(tweet);
-  // tweetsData.splice(index, 1);
+function handleDeleteTweet(tweetId) {
+  const tweet = tweetsData.find((tweet) => tweet.uuid === tweetId);
+  const index = tweetsData.indexOf(tweet);
+  tweetsData.splice(index, 1);
+  render();
 }
 
 function handleLikeClick(tweetId) {
@@ -79,17 +76,19 @@ function handleTweetBtnClick() {
 
 function getFeedHtml() {
   let feedHtml = ``;
+  if (tweetsData.length === 0) {
+    feedHtml = `<h1 class="no-data-heading">Add a new tweet!</h1>`;
+  } else {
+    tweetsData.forEach(function (tweet) {
+      let likeIconClass = tweet.isLiked ? "liked" : "";
 
-  tweetsData.forEach(function (tweet) {
-    let likeIconClass = tweet.isLiked ? "liked" : "";
+      let retweetIconClass = tweet.isRetweeted ? "retweeted" : "";
 
-    let retweetIconClass = tweet.isRetweeted ? "retweeted" : "";
+      let repliesHtml = "";
 
-    let repliesHtml = "";
-
-    if (tweet.replies.length > 0) {
-      tweet.replies.forEach(function (reply) {
-        repliesHtml += `
+      if (tweet.replies.length > 0) {
+        tweet.replies.forEach(function (reply) {
+          repliesHtml += `
 <div class="tweet-reply">
     <div class="tweet-inner">
         <img src="${reply.profilePic}" class="profile-pic">
@@ -100,17 +99,17 @@ function getFeedHtml() {
         </div>
 </div>
 `;
-      });
-    }
+        });
+      }
 
-    feedHtml += `
+      feedHtml += `
 <div class="tweet">
     <div class="tweet-inner">
         <img src="${tweet.profilePic}" class="profile-pic">
         <div>
           <div class="handle-div">
             <p class="handle">${tweet.handle}</p>
-          <i id="delete-btn" class="fa-solid fa-trash "></i>
+          <i id="delete-btn" class="fa-solid fa-trash" data-delete=${tweet.uuid}></i>
           </div>
             <p class="tweet-text">${tweet.tweetText}</p>
             <div class="tweet-details">
@@ -140,7 +139,8 @@ function getFeedHtml() {
     </div>   
 </div>
 `;
-  });
+    });
+  }
   return feedHtml;
 }
 

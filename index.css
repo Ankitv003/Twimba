@@ -168,6 +168,13 @@ button {
 #delete-btn:focus {
   background-color: tomato;
 }
+
+.no-data-heading {
+  margin-top: 2em;
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+}
 @media (min-width: 500px) {
   main,
   header {
