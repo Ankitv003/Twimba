@@ -1,5 +1,6 @@
 import { tweetsData } from "./data.js";
 import { v4 as uuidv4 } from "https://jspm.dev/uuid";
+import { saveTweets, loadTweets } from "./persist.js";
 
 document.addEventListener("click", function (e) {
   if (e.target.dataset.like) {
@@ -10,7 +11,7 @@ document.addEventListener("click", function (e) {
     handleReplyClick(e.target.dataset.reply);
   } else if (e.target.id === "tweet-btn") {
     handleTweetBtnClick();
-  } else if (e.target.id === "delete-btn") {
+  } else if (e.target.dataset.delete) {
     handleDeleteTweet(e.target.dataset.delete);
   }
 });
@@ -19,6 +20,7 @@ function handleDeleteTweet(tweetId) {
   const tweet = tweetsData.find((tweet) => tweet.uuid === tweetId);
   const index = tweetsData.indexOf(tweet);
   tweetsData.splice(index, 1);
+  saveTweets(tweetsData);
   render();
 }
 
@@ -33,6 +35,7 @@ function handleLikeClick(tweetId) {
     targetTweetObj.likes++;
   }
   targetTweetObj.isLiked = !targetTweetObj.isLiked;
+  saveTweets(tweetsData);
   render();
 }
 
@@ -47,6 +50,7 @@ function handleRetweetClick(tweetId) {
     targetTweetObj.retweets++;
   }
   targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted;
+  saveTweets(tweetsData);
   render();
 }
 
@@ -69,6 +73,7 @@ function handleTweetBtnClick() {
       isRetweeted: false,
       uuid: uuidv4(),
     });
+    saveTweets(tweetsData);
     render();
     tweetInput.value = "";
   }
@@ -77,7 +82,7 @@ function handleTweetBtnClick() {
 function getFeedHtml() {
   let feedHtml = ``;
   if (tweetsData.length === 0) {
-    feedHtml = `<h1 class="no-data-heading">Add a new tweet!</h1>`;
+    feedHtml = `<h1 class="no-data-heading">Tweet Your Heart Out!</h1>`;
   } else {
     tweetsData.forEach(function (tweet) {
       let likeIconClass = tweet.isLiked ? "liked" : "";
@@ -147,5 +152,11 @@ function getFeedHtml() {
 function render() {
   document.getElementById("feed").innerHTML = getFeedHtml();
 }
-
+window.addEventListener("load", function () {
+  const storedTweetsData = loadTweets();
+  if (storedTweetsData) {
+    tweetsData.splice(0, tweetsData.length, ...storedTweetsData);
+  }
+  render();
+});
 render();
