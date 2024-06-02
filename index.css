@@ -121,12 +121,13 @@ button:hover {
 }
 
 .reply-input {
+  margin-top: 0.4em;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 .reply-input input {
-  align-self: flex-end;
+  /* align-self: flex-end; */
+  margin-left: auto;
   border: none;
   resize: none;
   padding: 10px;
@@ -136,9 +137,11 @@ button:hover {
   line-height: 30px;
   background-color: #2a2537;
   color: #ddeae1;
+  margin-top: 1em;
+  margin-left: 2em;
 }
 .btn-reply {
-  align-self: flex-end;
+  margin-left: 8em;
   margin-top: 0.5em;
   background-color: #6c638b;
   border: none;
@@ -283,5 +286,8 @@ button:hover {
 
   .btn-reply {
     align-self: center;
+  }
+  .reply-input {
+    margin-top: 0;
   }
 }
