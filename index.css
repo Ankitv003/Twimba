@@ -81,7 +81,10 @@ button {
   font-size: 20px;
   font-weight: 600;
 }
-
+button:hover {
+  background-color: #b5a0a0;
+  color: #342e41;
+}
 /* tweet */
 
 .tweet {
@@ -146,6 +149,11 @@ button {
   cursor: pointer;
   font-size: 20px;
   font-weight: 600;
+}
+
+.btn-reply:hover {
+  background-color: #b5a0a0;
+  color: #342e41;
 }
 .handle {
   font-size: 12px;
