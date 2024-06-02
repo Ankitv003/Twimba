@@ -129,7 +129,6 @@ button:hover {
   /* align-self: flex-end; */
   margin-left: auto;
   border: none;
-  resize: none;
   padding: 10px;
   height: 60px;
   width: 80%;
@@ -280,14 +279,16 @@ button:hover {
     width: 650px;
   }
 
-  .reply-input input {
-    align-self: center;
-  }
-
   .btn-reply {
-    align-self: center;
+    margin-left: auto;
+    width: 20%;
   }
   .reply-input {
     margin-top: 0;
+    width: 98%;
+  }
+  .reply-input input {
+    width: 95%;
+    margin-left: auto;
   }
 }
